@@ -77,7 +77,9 @@ namespace ScreenMeltCmd
 
         static void Main( string[] args )
         {
-            Console.WriteLine( "Screen Melting Command Line v1.0" );
+            var dllVer = System.Reflection.Assembly.GetAssembly( typeof( ScreenMeltingDLL.ScreenMeltingApi ) ).GetName().Version;
+
+            Console.WriteLine( "Screen Melting Command Line v" + dllVer.ToString() );
 
             if (args.Length < 2)
             {

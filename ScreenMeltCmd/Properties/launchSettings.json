@@ -2,7 +2,7 @@
   "profiles": {
     "ScreenMeltCmd": {
       "commandName": "Project",
-      "commandLineArgs": "C:\\temp\\i1.jpg C:\\temp\\i2.jpg -o c:\\temp\\out.mp4 -f 60 -a 1 -e -sr 20 -ffp C:\\Users\\Filippo\\Repos\\ScreenMelting_Test\\bin\\Debug\\net5.0"
+      "commandLineArgs": ""
     }
   }
 }

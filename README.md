@@ -93,6 +93,9 @@ If you find this software useful, or it helped you to save time, you can offer m
 [![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://www.paypal.com/donate/?hosted_button_id=VNMV7XY9J5HBG)
 
 Bitcoin: bc1q4379vq6jfg8swgqajyaetm02fyk2mwj0mwy8wj
+
 Bitcoin: 1DbK9AoXxMRYYENwsoDEzqyxppo1cMUQUN
+
 Ethereum: 0x381C29dE5781EEa0182568146a1B2c32205DF85B
+
 Doge: DGbL57EA844QzgqRc1Z9kXLJKj261J138i

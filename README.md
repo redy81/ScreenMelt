@@ -15,11 +15,11 @@ _Note_: at the moment, the code is using System.Drawing, so it works only on Win
 
 ### Usage (DLL)
 
-The namespace `ScreenMeltingDLL` contains two classes: `ScreenMeltingOptions` and `ScreenMeltingApi`.
+The namespace `ScreenMeltDLL` contains two classes: `ScreenMeltOptions` and `ScreenMeltApi`.
 
-`ScreenMeltingOptions` contains the parameters that controls the generation process. `ScreenMeltingApi` contains a static metod to start the process. Actually, a third class is present, `ScreenMeltingApiWrapper`, which is included for the applications which cannot work with static classes/methods.
+`ScreenMeltOptions` contains the parameters that controls the generation process. `ScreenMeltApi` contains a static metod to start the process. Actually, a third class is present, `ScreenMeltApiWrapper`, which is included for the applications which cannot work with static classes/methods.
 
-The class `ScreenMeltingOptions` contains the following properties:
+The class `ScreenMeltOptions` contains the following properties:
 * `StartImagePath`: the path of the start image. Using the full path is recommanded.
 * `EndImagePath`: the path of the end image. Using the full path is recommanded.
 * `TempPath`: the path where to store the intermediate frames generated. If it's null or an empty string, a folder will be created in AppData\Local. This can be useful if the frames are needed.
@@ -33,12 +33,12 @@ The class `ScreenMeltingOptions` contains the following properties:
 * `FfmpegOptions`: This string is added to the arguments of the FFmpeg call (and the default arguments are removed). The video output path and the temp image files are still included in the arguments.
 * `AlgorithmType`: Select the type of algorithm to use. See below for a description.
 
-The class `ScreenMeltingApi` has only one static function:
+The class `ScreenMeltApi` has only one static function:
 
-`void GenerateVideo( ScreenMeltingOptions options, bool consoleOut = false, string ffmpegPath = "." )`
+`void GenerateVideo( ScreenMeltOptions options, bool consoleOut = false, string ffmpegPath = "." )`
 
-* `options' is an object of `ScreenMeltingOptions` type.
-* 'consoleOut` if set to true will show text on the console during the process.
+* `options` is an object of `ScreenMeltOptions` type.
+* `consoleOut` if set to true will show text on the console during the process.
 * `ffmpegPath` is a string with the path to `ffmpeg.exe`.
 
 
@@ -72,13 +72,13 @@ Options:
 -ffo [options]  String with options for FFmpeg (override defaults).
 ```
 
-#### Algorithms
+### Algorithms
 The following algoritms are implemented:
 * Type-0: original Doom melting algortihm. The maximum vertical displacement is `MaxStripeRandomDisplacement`.
 * Type-1: original Doom melting algortihm stretched to fill the `MaxStripeRandomDisplacement`.
 * Type-2: random displacement; each stripe is displaced Random( 0, `MaxStripeRandomDisplacement`).
 
-#### Notes
+### Notes
 
 * Default FFmpeg options are: `-framerate 30 -c:v libx264 -pix_fmt yuv420p`. These are not included when using the override option.
 * Some video codecs might require an image size multiple of 2.
@@ -86,7 +86,7 @@ The following algoritms are implemented:
 
 
 
-##### Donation
+#### Donation
 
 If you find this software useful, or it helped you to save time, you can offer me a coffee. :smile:
 

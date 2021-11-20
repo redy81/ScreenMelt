@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using ScreenMeltDLL;
 
 namespace ScreenMeltCmd
 {
@@ -75,9 +76,9 @@ namespace ScreenMeltCmd
 
         static void Main( string[] args )
         {
-            var dllVer = System.Reflection.Assembly.GetAssembly( typeof( ScreenMeltingDLL.ScreenMeltingApi ) ).GetName().Version;
+            var dllVer = System.Reflection.Assembly.GetAssembly( typeof( ScreenMeltApi ) ).GetName().Version;
 
-            Console.WriteLine( "Screen Melting Command Line v" + dllVer.ToString() );
+            Console.WriteLine( "Screen Melt Command Line v" + dllVer.ToString() );
 
             if (args.Length < 2)
             {
@@ -103,7 +104,7 @@ namespace ScreenMeltCmd
 
             bool verboseOutput = true;
             string ffmpegPath = ".";
-            var cmdOptions = new ScreenMeltingDLL.ScreenMeltingOptions
+            var cmdOptions = new ScreenMeltOptions
             {
                 StartImagePath = args[0],
                 EndImagePath = args[1]
@@ -199,7 +200,7 @@ namespace ScreenMeltCmd
 
             try
             {
-                ScreenMeltingDLL.ScreenMeltingApi.GenerateVideo( cmdOptions, verboseOutput, ffmpegPath );
+                ScreenMeltApi.GenerateVideo( cmdOptions, verboseOutput, ffmpegPath );
             }
             catch (Exception ex)
             {

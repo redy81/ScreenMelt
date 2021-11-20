@@ -5,6 +5,8 @@
     <Version>1.0.1.0</Version>
     <AssemblyVersion>1.0.1.0</AssemblyVersion>
     <FileVersion>1.0.1.0</FileVersion>
+    <AssemblyName>ScreenMeltDLL</AssemblyName>
+    <RootNamespace>ScreenMeltDLL</RootNamespace>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">

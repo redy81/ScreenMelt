@@ -5,33 +5,15 @@ namespace ScreenMeltCmd
 {
     internal static class Utils
     {
-        const int ExitCodeParameterError = 4;
+        public const int ExitCodeNotEnoughParameters = 1;
+        public const int ExitCodeInputFileError = 2;
+        public const int ExitCodeParameterError = 4;
+        public const int ExitCodeProcessingError = 5;
 
-        public static int GetIntParameter( string[] argsBuffer, int idx )
+        public static string GetStringParameter( string[] argsBuffer, ref int idx )
         {
-            if (idx >= argsBuffer.Length)
-            {
-                Console.WriteLine( "Not enough parameters specified. Error at '" + argsBuffer[idx - 1] + "'" );
-                Environment.Exit( ExitCodeParameterError );
-            }
-            else
-            {
-                if (int.TryParse( argsBuffer[idx], out int value ))
-                {
-                    return value;
-                }
-                else
-                {
-                    Console.WriteLine( "Invalid integer specified. Error at '" + argsBuffer[idx - 1] + "'" );
-                    Environment.Exit( ExitCodeParameterError );
-                }
-            }
+            idx++;
 
-            return -1;
-        }
-
-        public static string GetStringParameter( string[] argsBuffer, int idx )
-        {
             if (idx >= argsBuffer.Length)
             {
                 Console.WriteLine( "Not enough parameters specified. Error at '" + argsBuffer[idx - 1] + "'" );
@@ -42,7 +24,24 @@ namespace ScreenMeltCmd
                 return argsBuffer[idx];
             }
 
-            return "";
+            return "";  // To make the compiler happy
+        }
+
+        public static int GetIntParameter( string[] argsBuffer, ref int idx )
+        {
+            string param = GetStringParameter( argsBuffer, ref idx );
+
+            if (int.TryParse( param, out int value ))
+            {
+                return value;
+            }
+            else
+            {
+                Console.WriteLine( "Invalid integer specified. Error at '" + argsBuffer[idx - 1] + "'"  );
+                Environment.Exit( ExitCodeParameterError );
+            }
+
+            return -1;  // To make the compiler happy
         }
     }
 
@@ -71,7 +70,6 @@ namespace ScreenMeltCmd
             Console.WriteLine( "-t [tempPath]   Set the path of temporary images." );
             Console.WriteLine( "-ffp [ffmPath]  Path to ffmpeg.exe (if not in the path variable)." );
             Console.WriteLine( "-ffo [options]  String with options for FFmpeg (override defaults)." );
-            Console.WriteLine( "-ffo [options]  String with options for FFmpeg (override defaults)." );
             Console.WriteLine( "" );
         }
 
@@ -85,21 +83,21 @@ namespace ScreenMeltCmd
             {
                 Console.WriteLine( "Not enough parameter specified!" );
                 ShowHelp();
-                Environment.Exit( 1 );
+                Environment.Exit( Utils.ExitCodeNotEnoughParameters );
                 return;
             }
 
             if (!File.Exists( args[0] ))
             {
                 Console.WriteLine( "Start image was not found!" );
-                Environment.Exit( 2 );
+                Environment.Exit( Utils.ExitCodeInputFileError );
                 return;
             }
 
             if (!File.Exists( args[1] ))
             {
                 Console.WriteLine( "End image was not found!" );
-                Environment.Exit( 3 );
+                Environment.Exit( Utils.ExitCodeInputFileError );
                 return;
             }
 
@@ -116,13 +114,11 @@ namespace ScreenMeltCmd
                 switch (args[i].Trim().ToLower())
                 {
                     case "-o":
-                        cmdOptions.VideoOutputPath = Utils.GetStringParameter( args, i + 1 );
-                        i++;
+                        cmdOptions.VideoOutputPath = Utils.GetStringParameter( args, ref i );
                         break;
 
                     case "-t":
-                        cmdOptions.TempPath = Utils.GetStringParameter( args, i + 1 );
-                        i++;
+                        cmdOptions.TempPath = Utils.GetStringParameter( args, ref i );
                         break;
 
                     case "-k":
@@ -134,33 +130,27 @@ namespace ScreenMeltCmd
                         break;
 
                     case "-sw":
-                        cmdOptions.StripeWidth = Utils.GetIntParameter( args, i + 1 );
-                        i++;
+                        cmdOptions.StripeWidth = Utils.GetIntParameter( args, ref i );
                         break;
 
                     case "-a":
-                        cmdOptions.AlgorithmType = Utils.GetIntParameter( args, i + 1 );
-                        i++;
+                        cmdOptions.AlgorithmType = Utils.GetIntParameter( args, ref i );
                         break;
 
                     case "-sd":
-                        cmdOptions.StripeDisplacementPerFrame = Utils.GetIntParameter( args, i + 1 );
-                        i++;
+                        cmdOptions.StripeDisplacementPerFrame = Utils.GetIntParameter( args, ref i );
                         break;
 
                     case "-sr":
-                        cmdOptions.MaxStripeRandomDisplacement = Utils.GetIntParameter( args, i + 1 );
-                        i++;
+                        cmdOptions.MaxStripeRandomDisplacement = Utils.GetIntParameter( args, ref i );
                         break;
 
                     case "-f":
-                        cmdOptions.FrameCount = Utils.GetIntParameter( args, i + 1 );
-                        i++;
+                        cmdOptions.FrameCount = Utils.GetIntParameter( args, ref i );
                         break;
 
                     case "-r":
-                        cmdOptions.RandomSeed = Utils.GetIntParameter( args, i + 1 );
-                        i++;
+                        cmdOptions.RandomSeed = Utils.GetIntParameter( args, ref i );
                         break;
 
                     case "-nv":
@@ -168,18 +158,21 @@ namespace ScreenMeltCmd
                         break;
 
                     case "-ffp":
-                        ffmpegPath = Utils.GetStringParameter( args, i + 1 );
-                        i++;
+                        ffmpegPath = Utils.GetStringParameter( args, ref i );
                         break;
 
                     case "-ffo":
-                        cmdOptions.FfmpegOptions = Utils.GetStringParameter( args, i + 1 );
-                        i++;
+                        cmdOptions.FfmpegOptions = Utils.GetStringParameter( args, ref i );
                         break;
 
                     case "-h":
                         ShowHelp();
                         Environment.Exit( 0 );
+                        break;
+
+                    default:
+                        Console.WriteLine( "Invalid parameter: " + args[i].Trim() );
+                        Environment.Exit( Utils.ExitCodeParameterError );
                         break;
                 }
             }
@@ -210,9 +203,10 @@ namespace ScreenMeltCmd
             }
             catch (Exception ex)
             {
+                Console.WriteLine( "" );
                 Console.WriteLine( "Processing error:" );
                 Console.WriteLine( ex.Message );
-                Environment.Exit( 5 );
+                Environment.Exit( Utils.ExitCodeProcessingError );
             }
 
             Environment.Exit( 0 );

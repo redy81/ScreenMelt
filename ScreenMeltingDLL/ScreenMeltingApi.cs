@@ -7,7 +7,6 @@ using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
 
-//#pragma warning disable CA1416 // Validate platform compatibility
 
 namespace ScreenMeltingDLL
 {
@@ -56,25 +55,22 @@ namespace ScreenMeltingDLL
     {
         static readonly int[] DoomRndTable = new int[256]
         {
-            0,   8, 109, 220, 222, 241, 149, 107,  75, 248, 254, 140,  16,  66 ,
-            74,  21, 211,  47,  80, 242, 154,  27, 205, 128, 161,  89,  77,  36 ,
-            95, 110,  85,  48, 212, 140, 211, 249,  22,  79, 200,  50,  28, 188 ,
-            52, 140, 202, 120,  68, 145,  62,  70, 184, 190,  91, 197, 152, 224 ,
-            149, 104,  25, 178, 252, 182, 202, 182, 141, 197,   4,  81, 181, 242 ,
-            145,  42,  39, 227, 156, 198, 225, 193, 219,  93, 122, 175, 249,   0 ,
-            175, 143,  70, 239,  46, 246, 163,  53, 163, 109, 168, 135,   2, 235 ,
-            25,  92,  20, 145, 138,  77,  69, 166,  78, 176, 173, 212, 166, 113 ,
-            94, 161,  41,  50, 239,  49, 111, 164,  70,  60,   2,  37, 171,  75 ,
-            136, 156,  11,  56,  42, 146, 138, 229,  73, 146,  77,  61,  98, 196 ,
-            135, 106,  63, 197, 195,  86,  96, 203, 113, 101, 170, 247, 181, 113 ,
-            80, 250, 108,   7, 255, 237, 129, 226,  79, 107, 112, 166, 103, 241 ,
-            24, 223, 239, 120, 198,  58,  60,  82, 128,   3, 184,  66, 143, 224 ,
-            145, 224,  81, 206, 163,  45,  63,  90, 168, 114,  59,  33, 159,  95 ,
-            28, 139, 123,  98, 125, 196,  15,  70, 194, 253,  54,  14, 109, 226 ,
-            71,  17, 161,  93, 186,  87, 244, 138,  20,  52, 123, 251,  26,  36 ,
-            17,  46,  52, 231, 232,  76,  31, 221,  84,  37, 216, 165, 212, 106 ,
-            197, 242,  98,  43,  39, 175, 254, 145, 190,  84, 118, 222, 187, 136 ,
-            120, 163, 236, 249
+            11, 143, 192, 176, 138, 204, 198, 240, 230, 180, 220, 78, 172, 210, 239, 236,
+            203, 31, 194, 27, 179, 152, 36, 103, 96, 90, 163, 207, 147, 107, 40, 50,
+            105, 118, 86, 158, 213, 30, 108, 34, 199, 95, 61, 77, 106, 144, 42, 171,
+            177, 67, 66, 187, 88, 245, 125, 37, 68, 142, 141, 13, 63, 14, 10, 218,
+            253, 229, 51, 112, 2, 217, 104, 26, 15, 211, 87, 212, 29, 4, 80, 25,
+            101, 92, 75, 124, 154, 53, 9, 44, 146, 43, 243, 38, 109, 6, 74, 182,
+            121, 3, 161, 156, 114, 223, 195, 48, 254, 193, 32, 21, 246, 205, 18, 153,
+            113, 58, 119, 84, 97, 132, 54, 242, 169, 174, 46, 117, 249, 123, 233, 136,
+            91, 52, 209, 248, 173, 168, 185, 93, 20, 8, 111, 255, 102, 83, 76, 89,
+            122, 16, 151, 64, 247, 134, 241, 49, 206, 237, 190, 85, 99, 150, 201, 1,
+            57, 252, 228, 157, 183, 216, 162, 159, 219, 22, 238, 70, 197, 139, 222, 225,
+            128, 116, 235, 131, 41, 165, 81, 19, 232, 79, 221, 214, 7, 0, 188, 186,
+            191, 135, 12, 71, 231, 234, 140, 200, 56, 208, 100, 181, 148, 244, 55, 73,
+            166, 60, 115, 226, 62, 130, 59, 170, 28, 215, 110, 127, 23, 145, 178, 227,
+            39, 160, 24, 65, 155, 69, 137, 120, 129, 250, 202, 82, 224, 72, 167, 5,
+            47, 45, 196, 184, 98, 17, 189, 164, 35, 33, 126, 94, 149, 175, 251, 133,        
         };
 
 #pragma warning disable CA1416 // Validate platform compatibility
@@ -244,89 +240,96 @@ namespace ScreenMeltingDLL
             int CurrentFrame = 0;
             bool ProcessCompleted = false;
 
-            while (!ProcessCompleted)
+            try
             {
-                Log( "Processing frame " + CurrentFrame + "..." );
-
-                ProcessCompleted = true;
-
-                Output.DrawImageUnscaled( EndImage, 0, 0 );
-
-                for (int stripe = 0; stripe < StripeCount; stripe++)
+                while (!ProcessCompleted)
                 {
-                    if (CurrentFrame > StartFrames[stripe])
+                    Log( "Processing frame " + CurrentFrame + "..." );
+
+                    ProcessCompleted = true;
+
+                    Output.DrawImageUnscaled( EndImage, 0, 0 );
+
+                    for (int stripe = 0; stripe < StripeCount; stripe++)
                     {
-                        StripePositionY[stripe] += StripeStepY;
+                        if (CurrentFrame > StartFrames[stripe])
+                        {
+                            StripePositionY[stripe] += StripeStepY;
+                        }
+
+                        if (ProcessCompleted && StripePositionY[stripe] < WorkHeight)
+                        {
+                            ProcessCompleted = false;
+                        }
+
+                        Output.DrawImage( StartImage, stripe * StripesWidth, StripePositionY[stripe],
+                                          new Rectangle( stripe * StripesWidth, 0, StripesWidth, (int)(WorkHeight - StripePositionY[stripe] + 1) ),
+                                          GraphicsUnit.Pixel );
                     }
 
-                    if (ProcessCompleted && StripePositionY[stripe] < WorkHeight)
-                    {
-                        ProcessCompleted = false;
-                    }
+                    string OutputPath = Path.Combine( TempPath, "Frame" + CurrentFrame.ToString( "D4" ) + ".png" );
 
-                    Output.DrawImage( StartImage, stripe * StripesWidth, StripePositionY[stripe],
-                                      new Rectangle( stripe * StripesWidth, 0, StripesWidth, (int)(WorkHeight - StripePositionY[stripe] + 1) ),
-                                      GraphicsUnit.Pixel );
+                    WorkingImage.Save( OutputPath, ImageFormat.Png );
+                    OutputFileList.Add( OutputPath );
+
+                    CurrentFrame++;
                 }
 
-                string OutputPath = Path.Combine( TempPath, "Frame" + CurrentFrame.ToString( "D4" ) + ".png" );
+                if (!string.IsNullOrWhiteSpace( options.VideoOutputPath ))
+                {
+                    // Generate video
+                    Process ffmpgProcess = new();
 
-                WorkingImage.Save( OutputPath, ImageFormat.Png );
-                OutputFileList.Add( OutputPath );
+                    string ffProcessArgs = "-y ";
 
-                CurrentFrame++;
+                    if (!consoleOut)
+                    {
+                        ffProcessArgs += "-loglevel quiet ";
+                    }
+
+                    if (string.IsNullOrWhiteSpace( options.FfmpegOptions ))
+                    {
+                        ffProcessArgs += string.Format( "-framerate {0} -i \"{1}\" -c:v libx264 -pix_fmt yuv420p \"{2}\"", 30, Path.Combine( TempPath, "Frame%04d.png" ), options.VideoOutputPath );
+                    }
+                    else
+                    {
+                        ffProcessArgs += string.Format( "-i \"{0}\" {1} \"{2}\"", Path.Combine( TempPath, "Frame%04d.png" ), options.FfmpegOptions, options.VideoOutputPath );
+                    }
+
+                    ffmpgProcess.StartInfo = new ProcessStartInfo()
+                    {
+                        WorkingDirectory = ffmpegPath,
+                        FileName = Path.Combine( ffmpegPath, "ffmpeg.exe" ),
+                        Arguments = ffProcessArgs,
+                        WindowStyle = ProcessWindowStyle.Hidden,
+                    };
+
+                    ffmpgProcess.Start();
+                    ffmpgProcess.WaitForExit();
+
+                    if (ffmpgProcess.ExitCode != 0)
+                    {
+
+                    }
+                }
             }
-
-            if (!string.IsNullOrWhiteSpace( options.VideoOutputPath ))
+            finally // Like this the exception will go through, but the temp files will be erased anyway
             {
-                // Generate video
-                Process ffmpgProcess = new Process();
-
-                string ffProcessArgs = "-y ";
-
-                if (!consoleOut)
+                if (!options.KeepTempImages)
                 {
-                    ffProcessArgs += "-loglevel quiet ";
-                }
+                    Log( "Erasing temp!" );
 
-                if (string.IsNullOrWhiteSpace( options.FfmpegOptions ))
-                {
-                    ffProcessArgs += string.Format( "-framerate {0} -i \"{1}\" -c:v libx264 -pix_fmt yuv420p \"{2}\"", 30, Path.Combine( TempPath, "Frame%04d.png" ), options.VideoOutputPath );
-                }
-                else
-                {
-                    ffProcessArgs += string.Format( "-i \"{0}\" {1} \"{2}\"", Path.Combine( TempPath, "Frame%04d.png" ), options.FfmpegOptions, options.VideoOutputPath );
-                }
-
-                ffmpgProcess.StartInfo = new ProcessStartInfo()
-                {
-                    WorkingDirectory = ffmpegPath,
-                    FileName = Path.Combine( ffmpegPath, "ffmpeg.exe" ),
-                    Arguments = ffProcessArgs,
-                    WindowStyle = ProcessWindowStyle.Hidden,
-                };
-
-                ffmpgProcess.Start();
-                ffmpgProcess.WaitForExit();
-
-                if (ffmpgProcess.ExitCode != 0)
-                {
-
-                }
-            }
-
-            if (!options.KeepTempImages)
-            {
-                foreach (var f in OutputFileList)
-                {
-                    try
+                    foreach (var f in OutputFileList)
                     {
-                        File.Delete( f );
-                    }
-                    catch (Exception ex)
-                    {
-                        Log( "Cannot delete: " + f );
-                        Log( ex.Message );
+                        try
+                        {
+                            File.Delete( f );
+                        }
+                        catch (Exception ex)
+                        {
+                            Log( "Cannot delete: " + f );
+                            Log( ex.Message );
+                        }
                     }
                 }
             }
